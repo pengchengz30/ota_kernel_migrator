@@ -26,14 +26,39 @@ if [ -d "$WORKDIR" ]; then
     rm -rf "$WORKDIR"
 fi
 
-# Ensure magiskboot exists in the current directory
+# --- magiskboot check with auto-download ---
 if [ ! -f "$MAGISKBOOT" ]; then
     echo "[-] Error: $MAGISKBOOT not found in the current directory."
-    echo "[!] Please download the magiskboot binary from:"
-    echo "    https://github.com/magojohnji/magiskboot-linux"
-    echo "    (Select the version matching your architecture, e.g., arm64-v8a)"
-    exit 1
+    echo "[?] Which architecture is your device/environment using?"
+    echo "    1) arm64-v8a  (Pixel 10 Pro / Modern Android)"
+    echo "    2) armeabi-v7a (Older 32-bit)"
+    echo "    3) x86"
+    echo "    4) x86_64"
+    printf "Please select [1-4]: "
+    read arch_choice
+
+    echo "--------------------------------------------------------"
+    case "$arch_choice" in
+        1) ARCH="arm64-v8a" ;;
+        2) ARCH="armeabi-v7a" ;;
+        3) ARCH="x86" ;;
+        4) ARCH="x86_64" ;;
+        *) echo "[!] Invalid selection. Exiting."; exit 1 ;;
+    esac
+
+    URL="https://github.com/magojohnji/magiskboot-linux/raw/refs/heads/main/${ARCH}/magiskboot"
+    echo "[!] Downloading $ARCH version from GitHub..."
+    
+    if curl -fL -o "$MAGISKBOOT" "$URL"; then
+        echo "[+] Download successful."
+    else
+        echo "[-] Error: Download failed. Please check your internet connection or URL."
+        echo "    URL: $URL"
+        exit 1
+    fi
+    echo "--------------------------------------------------------"
 fi
+
 
 chmod +x "$MAGISKBOOT"
 mkdir -p "$WORKDIR"
@@ -116,13 +141,13 @@ case "$flash_confirm" in
         ;;
     *)
         echo "[#] Flash aborted by user. The patched image is saved in $WORKDIR."
-	    exit 1;
+	exit 1;
         ;;
 esac
 
 # --- 5. Flash Back to Target Slot ---
 echo "[+] Step 3: Flashing patched image to boot$TARGET_SLOT..."
-dd if="$IMG_OUT" of="/dev/block/by-name/boot$TARGET_SLOT" status=progress
+#dd if="$IMG_OUT" of="/dev/block/by-name/boot$TARGET_SLOT" status=progress
 
 # Ensure all data is physically written to the flash storage
 echo "[+] Synchronizing file system..."
