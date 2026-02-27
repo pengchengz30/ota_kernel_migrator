@@ -94,7 +94,26 @@ echo "[+] Target Inactive Slot: $TARGET_SLOT (Awaiting update/patch)"
 
 # --- 3. Extract Custom Kernel from Current Slot ---
 echo "[+] Step 1: Extracting current boot from $CURRENT_SLOT..."
-dd if="/dev/block/by-name/boot$CURRENT_SLOT" of=boot_current.img status=none
+CURRENT_BOOT_DEV="/dev/block/by-name/boot$CURRENT_SLOT"
+dd if="$CURRENT_BOOT_DEV" of=boot_current.img status=none
+
+echo "[*] Verifying data integrity..."
+
+CURRENT_SHA_DEV=$(sha256sum "$CURRENT_BOOT_DEV" | awk '{print $1}')
+CURRENT_SHA_IMG=$(sha256sum boot_current.img | awk '{print $1}')
+
+if [ "$CURRENT_SHA_DEV" != "$CURRENT_SHA_IMG" ]; then
+    echo "--------------------------------------------------------"
+    echo "[-] CRITICAL ERROR: SHA256 Mismatch!"
+    echo "    Device: $CURRENT_SHA_DEV"
+    echo "    Image:  $CURRENT_SHA_IMG"
+    echo "[!] Extraction failed or data is corrupted. Exiting for safety."
+    echo "--------------------------------------------------------"
+    rm -f boot_current.img
+    exit 1
+else
+    echo "[+] Integrity Verified: SHA256 matches ($CURRENT_SHA_IMG)"
+fi
 
 echo "[+] Unpacking current boot to isolate kernel..."
 ../$MAGISKBOOT unpack boot_current.img > /dev/null
@@ -114,8 +133,26 @@ done
 mv kernel custom_kernel
 
 # --- 4. Patch Target Slot Boot with Custom Kernel ---
-echo "[+] Step 2: Extracting stock boot from $TARGET_SLOT..."
-dd if="/dev/block/by-name/boot$TARGET_SLOT" of=boot_target.img status=none
+TARGET_BOOT_DEV="/dev/block/by-name/boot$TARGET_SLOT"
+dd if="$TARGET_BOOT_DEV" of=boot_target.img status=none
+
+echo "[*] Verifying data integrity..."
+
+TARGET_SHA_DEV=$(sha256sum "$TARGET_BOOT_DEV" | awk '{print $1}')
+TARGET_SHA_IMG=$(sha256sum boot_target.img | awk '{print $1}')
+
+if [ "$TARGET_SHA_DEV" != "$TARGET_SHA_IMG" ]; then
+    echo "--------------------------------------------------------"
+    echo "[-] CRITICAL ERROR: SHA256 Mismatch!"
+    echo "    Device: $TARGET_SHA_DEV"
+    echo "    Image:  $TARGET_SHA_IMG"
+    echo "[!] Extraction failed or data is corrupted. Exiting for safety."
+    echo "--------------------------------------------------------"
+    rm -f boot_target.img
+    exit 1
+else
+    echo "[+] Integrity Verified: SHA256 matches ($TARGET_SHA_IMG)"
+fi
 
 echo "[+] Unpacking target boot and replacing with custom kernel..."
 ../$MAGISKBOOT unpack boot_target.img > /dev/null
