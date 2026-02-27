@@ -62,7 +62,7 @@ if [ ! -f "$MAGISKBOOT" ]; then
         *) echo "[!] Invalid selection. Exiting."; exit 1 ;;
     esac
     CURL="/data/data/com.termux/files/usr/bin/curl"
-    URL="https://github.com/magojohnji/magiskboot-linux/raw/refs/heads/main/${ARCH}/magiskboot"
+    URL="https://github.com/pengchengz30/magiskboot-linux/raw/refs/heads/main/${ARCH}/magiskboot"
     echo "[!] Downloading $ARCH version from GitHub..."
     
     if $CURL -fLsS -o "$MAGISKBOOT" "$URL"; then
