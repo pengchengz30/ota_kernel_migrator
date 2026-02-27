@@ -117,7 +117,7 @@ esac
 
 # --- 5. Flash Back to Target Slot ---
 echo "[+] Step 3: Flashing patched image to boot$TARGET_SLOT..."
-#dd if="$IMG_OUT" of="/dev/block/by-name/boot$TARGET_SLOT" status=progress
+dd if="$IMG_OUT" of="/dev/block/by-name/boot$TARGET_SLOT" status=progress
 
 # Ensure all data is physically written to the flash storage
 echo "[+] Synchronizing file system..."
