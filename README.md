@@ -37,7 +37,6 @@ su -c './kernel_migrator.sh'
 This project relies heavily on the **magiskboot** binary for boot image unpacking and repacking.
 
 * **Binary Source**: [magiskboot-linux](https://github.com/magojohnji/magiskboot-linux) by magojohnji.
-* **Auto-Provisioning**: The script is designed to automatically detect your device architecture and download the appropriate binary if it is missing from the local directory.
 
 ---
 
