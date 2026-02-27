@@ -2,6 +2,22 @@
 
 set -e
 
+# --- Directory Safety Check ---
+# Ensures we are on a filesystem that supports execution (ext4/f2fs)
+case "$PWD" in
+    /data/local/tmp*|/data/data/com.termux*)
+        echo "[+] Directory verified: $PWD"
+        ;;
+    *)
+        echo "--------------------------------------------------------"
+        echo "[-] ERROR: Untrusted execution directory ($PWD)."
+        echo "[!] This script must run from a location that supports binary execution."
+        echo "    Please move the script to /data/local/tmp or Termux home."
+        echo "--------------------------------------------------------"
+        exit 1
+        ;;
+esac
+
 if [ "$(id -u)" != 0 ]; then
     echo "Must be run as root"
     exit 1
