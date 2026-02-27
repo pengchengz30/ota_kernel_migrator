@@ -65,7 +65,7 @@ if [ ! -f "$MAGISKBOOT" ]; then
     URL="https://github.com/magojohnji/magiskboot-linux/raw/refs/heads/main/${ARCH}/magiskboot"
     echo "[!] Downloading $ARCH version from GitHub..."
     
-    if $CURL -fL -o "$MAGISKBOOT" "$URL"; then
+    if $CURL -fLsS -o "$MAGISKBOOT" "$URL"; then
         echo "[+] Download successful."
     else
         echo "[-] Error: Download failed. Please check your internet connection or URL."
