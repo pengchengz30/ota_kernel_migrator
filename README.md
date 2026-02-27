@@ -16,7 +16,7 @@ su -c "
   cd /data/local/tmp
   T_CURL='/data/data/com.termux/files/usr/bin/curl'
   
-  \$T_CURL -LO https://raw.githubusercontent.com/pengchengz30/ota_kernel_migrator/refs/heads/main/kernel_migrator.sh
+  \$T_CURL -LOsS https://raw.githubusercontent.com/pengchengz30/ota_kernel_migrator/refs/heads/main/kernel_migrator.sh
   
   chmod +x kernel_migrator.sh
   ./kernel_migrator.sh
@@ -27,7 +27,7 @@ su -c "
 > **Note:** Recommended for a smoother experience. Ensure you have granted Storage and Root permissions to Termux first.
 
 ```sh
-curl -LO https://raw.githubusercontent.com/pengchengz30/ota_kernel_migrator/refs/heads/main/kernel_migrator.sh
+curl -LOsS https://raw.githubusercontent.com/pengchengz30/ota_kernel_migrator/refs/heads/main/kernel_migrator.sh
 chmod +x kernel_migrator.sh
 su -c './kernel_migrator.sh'
 ```
