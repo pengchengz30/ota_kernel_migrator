@@ -111,7 +111,7 @@ case "$flash_confirm" in
         ;;
     *)
         echo "[#] Flash aborted by user. The patched image is saved in $WORKDIR."
-	exit 1;
+	    exit 1;
         ;;
 esac
 
