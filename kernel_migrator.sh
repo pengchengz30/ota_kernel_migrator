@@ -132,7 +132,10 @@ done
 
 get_version() {
 	local kernel_file="$1"
-	[ -f "$kernel_file" ] || return 1
+	if [ ! -f "$kernel_file" ]; then
+        echo "$kernel_file NOT_FOUND"
+        return 0
+    fi
     grep -ao "Linux version [0-9.]*" $kernel_file | head -n 1 | cut -d ' ' -f 3 | cut -d '.' -f 1,2
 }
 
