@@ -130,31 +130,6 @@ for file in *; do
     fi
 done
 
-get_version() {
-	local kernel_file="$1"
-	if [ ! -f "$kernel_file" ]; then
-        echo "$kernel_file NOT_FOUND"
-        return 0
-    fi
-    grep -ao "Linux version [0-9.]*" $kernel_file | head -n 1 | cut -d ' ' -f 3 | cut -d '.' -f 1,2
-}
-
-TARGET_VER=$(get_version "kernel")
-CURRENT_VER=$(get_version "custom_kernel")
-
-if [ "$TARGET_VER" != "$CURRENT_VER" ]; then
-    echo "--------------------------------------------------------"
-    echo "[-] CRITICAL: Kernel Version Mismatch!"
-    echo "    Source (Custom): $CURRENT_VER"
-    echo "    Target (OTA):    $TARGET_VER"
-    echo "[!] The kernel you are trying to port is a different major version."
-    echo "    This may cause driver (vendor_dlkm) conflicts."
-    echo "--------------------------------------------------------"
-    exit 1
-fi
-
-echo "[+] Version Match Verified: $CURRENT_VER"
-
 mv kernel custom_kernel
 
 # --- 4. Patch Target Slot Boot with Custom Kernel ---
@@ -187,6 +162,31 @@ if [ ! -f "kernel" ]; then
     echo "[-] Error: Failed to extract kernel from $TARGET_SLOT."
     exit 1
 fi
+
+get_version() {
+	local kernel_file="$1"
+	if [ ! -f "$kernel_file" ]; then
+        echo "$kernel_file NOT_FOUND"
+        return 0
+    fi
+    grep -ao "Linux version [0-9.]*" $kernel_file | head -n 1 | cut -d ' ' -f 3 | cut -d '.' -f 1,2
+}
+
+TARGET_VER=$(get_version "kernel")
+CURRENT_VER=$(get_version "custom_kernel")
+
+if [ "$TARGET_VER" != "$CURRENT_VER" ]; then
+    echo "--------------------------------------------------------"
+    echo "[-] CRITICAL: Kernel Version Mismatch!"
+    echo "    Source (Custom): $CURRENT_VER"
+    echo "    Target (OTA):    $TARGET_VER"
+    echo "[!] The kernel you are trying to port is a different major version."
+    echo "    This may cause driver (vendor_dlkm) conflicts."
+    echo "--------------------------------------------------------"
+    exit 1
+fi
+
+echo "[+] Version Match Verified: $CURRENT_VER"
 
 mv custom_kernel kernel
 
