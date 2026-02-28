@@ -56,4 +56,5 @@ This project relies heavily on the **magiskboot** binary for boot image unpackin
 
 * **GKI Only:** This script is specifically tuned for **GKI-compliant** kernels.
 * **Directory Constraint**: For security and binary execution support, this script **must** be run from `/data/local/tmp` or the **Termux** home directory.
+* **Kernel Version Guard**: Automatically extracts and compares the major version (e.g., 6.6) of both source and target kernels. It blocks migration if a mismatch is detected to prevent driver (vendor_dlkm) incompatibilities.
 * **Non-Active Slot**: By default, this script patches and flashes the **inactive slot**. This provides a safety net: if the new kernel fails to boot, the system will automatically rollback to your current working slot after a few failed boot attempts.
